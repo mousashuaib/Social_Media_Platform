@@ -81,5 +81,6 @@ The platform uses a relational database with the following schema:
 
 ## Quick Insight about the database Design
 
-![image](https://github.com/user-attachments/assets/77daddc4-03cb-4079-b22f-ce4942ce6220)
+![image](https://github.com/user-attachments/assets/f47e1927-49b6-4d76-9d3d-9dec71627413)
+
 

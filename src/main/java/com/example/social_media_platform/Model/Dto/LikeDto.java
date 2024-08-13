@@ -14,10 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LikeDto {
     private Long likeId;
-    private Long userId;
-    private Long postId;
-    private Long commentId;
+    private Long userEntity;
+    private Long post;
+    private Long comment;
     private Timestamp date;
-    private Timestamp lastUpdated;
 
 }

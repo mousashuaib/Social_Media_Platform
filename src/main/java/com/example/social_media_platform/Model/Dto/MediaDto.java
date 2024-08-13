@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MediaDto {
     private Long mediaId;
-    private Long postId;
+    private Long post;
     private String mediaType;
     private String mediaUrl;
 }

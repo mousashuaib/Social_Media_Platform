@@ -15,8 +15,8 @@ import java.sql.Timestamp;
 
 public class FriendRequestDto {
     private Long requestId;
-    private Long senderId;
-    private Long receiverId;
+    private Long sender;
+    private Long receiver;
     private String status;
     private Timestamp createdAt;
 }

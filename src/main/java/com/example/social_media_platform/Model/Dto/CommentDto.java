@@ -14,9 +14,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDto {
-    private Long commentId;
-    private Long userId;
-    private Long postId;
+    private Long comment_id;
+    private Long user;
+    private Long post;
     private String text;
     private Timestamp date;
     private Set<LikeDto> likes;

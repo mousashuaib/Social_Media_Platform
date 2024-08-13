@@ -15,8 +15,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ProfileDto {
     private Long profileId;
+    private Long userEntity;
+    private String bio;
     private String profilePictureUrl;
     private Timestamp createdAt;
-    private String miscellaneous;
+    private String misc;
+    private Timestamp lastUpdated;
 
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class PostDto {
     private Long postId;
-    private Long userId;
+    private Long userEntity;
     private String text;
     private Timestamp date;
     private Set<MediaDto> media;

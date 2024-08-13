@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class FriendshipDto {
     private Long friendshipId;
-    private Long userId1;
-    private Long userId2;
+    private Long userEntity1;
+    private Long userEntity2;
     private Timestamp timestamp;
     private Timestamp lastUpdated;
 

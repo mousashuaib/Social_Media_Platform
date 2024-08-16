@@ -1,6 +1,7 @@
 package com.example.social_media_platform.Model.Mapper;
 
 import com.example.social_media_platform.Model.Dto.MediaDto;
+
 import com.example.social_media_platform.Model.Entity.Media;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

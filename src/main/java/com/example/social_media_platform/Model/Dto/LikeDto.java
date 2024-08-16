@@ -17,6 +17,5 @@ public class LikeDto {
     private Long userEntity;
     private Long post;
     private Long comment;
-    private Timestamp date;
 
 }

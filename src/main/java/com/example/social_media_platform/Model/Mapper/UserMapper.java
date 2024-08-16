@@ -1,5 +1,4 @@
 package com.example.social_media_platform.Model.Mapper;
-
 import com.example.social_media_platform.Model.Dto.UserDto;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import org.mapstruct.Mapper;

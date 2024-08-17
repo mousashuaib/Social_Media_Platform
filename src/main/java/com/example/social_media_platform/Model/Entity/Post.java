@@ -1,29 +1,25 @@
-package com.example.social_media_platform.Model.Entitiy;
+package com.example.social_media_platform.Model.Entity;
 
 
 import lombok.Data;
-
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
 
 
+
 @Data
 @Entity
-@Table(name = "comment")
-public class Comment {
+@Table(name = "post")
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long comment_id;
+    private Long postId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
-
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private UserEntity userEntity;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String text;
@@ -31,8 +27,17 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp date;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<Media> media;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Like> likes;
 
+    @Column(name = "last_updated")
+    private Timestamp lastUpdated;
 
 }
+

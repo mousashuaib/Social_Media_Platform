@@ -1,11 +1,18 @@
-package com.example.social_media_platform.Model.Entitiy;
+package com.example.social_media_platform.Model.Entity;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+@Getter
+@Setter
+@NoArgsConstructor
 
-@Data
 @Entity
 @Table(name = "user_entity")
 public class UserEntity {
@@ -57,6 +64,20 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendRequest> receivedRequests;
+
+    public UserEntity(String name, String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
 
 }

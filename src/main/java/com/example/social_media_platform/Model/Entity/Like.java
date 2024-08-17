@@ -1,4 +1,4 @@
-package com.example.social_media_platform.Model.Entitiy;
+package com.example.social_media_platform.Model.Entity;
 
 
 import lombok.Data;
@@ -26,8 +26,6 @@ public class Like {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp date;
 
 
 }

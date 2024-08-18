@@ -4,6 +4,7 @@ package com.example.social_media_platform.Model.Entity;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Set;
 
 
@@ -39,5 +40,36 @@ public class Post {
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
+    @PrePersist
+    protected void onCreate() {
+        this.date = Timestamp.from(Instant.now());
+        this.lastUpdated = Timestamp.from(Instant.now());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = Timestamp.from(Instant.now());
+    }
+    public void addMedia(Media media) {
+        media.setPost(this);
+        this.media.add(media);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Post post = (Post) o;
+
+        return postId != null ? postId.equals(post.postId) : post.postId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return postId != null ? postId.hashCode() : 0;
+    }
 }
+
+
 

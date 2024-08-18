@@ -5,6 +5,7 @@ import lombok.Data;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Set;
 
 
@@ -34,5 +35,9 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private Set<Like> likes;
 
+    @PrePersist
+    protected void onCreate() {
+        this.date = Timestamp.from(Instant.now());
+    }
 
 }

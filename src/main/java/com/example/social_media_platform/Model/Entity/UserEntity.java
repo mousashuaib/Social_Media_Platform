@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, unique = true, length = 255)
     private String name;
 
     @Column(nullable = false, unique = true, length = 255)
@@ -53,17 +54,24 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Profile profile;
 
+
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private Set<FriendRequest> sentRequests;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendRequest> receivedRequests;
+
+
+    @OneToMany(mappedBy = "userEntity1", cascade = CascadeType.ALL)
+    private Set<Friendship> friendships;
 
     public UserEntity(String name, String email, String password) {
         this.email = email;

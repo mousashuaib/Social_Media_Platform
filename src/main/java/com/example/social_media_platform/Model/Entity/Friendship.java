@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
@@ -16,23 +17,28 @@ public class Friendship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long friendshipId;
 
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id1", nullable = false)
     private UserEntity userEntity1;
 
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id2", nullable = false)
     private UserEntity userEntity2;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp timestamp;
 
 //    @Column(name = "last_updated", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 //    private Timestamp lastUpdated;
 
 
-    //updated at is not provided in postgries, the implementaion is using trigers
 
+
+    //updated at is not provided in postgries, the implementaion is using trigers
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 

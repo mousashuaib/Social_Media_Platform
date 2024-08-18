@@ -18,6 +18,7 @@ public class ProfileDto {
     private Long userEntity;
     private String bio;
     private String profilePictureUrl;
+    private String coverPictureUrl;
     private Timestamp createdAt;
     private String misc;
     private Timestamp lastUpdated;

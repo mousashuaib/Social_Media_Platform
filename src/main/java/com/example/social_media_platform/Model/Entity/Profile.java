@@ -34,6 +34,9 @@ public class Profile {
     @Column(name = "profile_picture_url", length = 255)
     private String profilePictureUrl;
 
+    @Column(name = "cover_picture_url", length = 255)
+    private String coverPictureUrl;
+
 
     /*
       This means that the createdAt column in the friendRequest
@@ -42,7 +45,7 @@ public class Profile {
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
-    @Column(name = "misc", columnDefinition = "json")
+    @Column(name = "misc")
     private String misc;
 
 

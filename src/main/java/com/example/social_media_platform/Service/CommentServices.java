@@ -35,7 +35,7 @@ public class CommentServices {
     }
     public CommentDto getCommentById(Long commentId){
     Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new EntityNotFoundException("الكومنت غير موجود حبيبي"));
-        comment.getLikes().size();
+        System.out.println("Number of likes for comment: " + comment.getLikes().size());
 
         return commentMapper.toDto(comment);
     }

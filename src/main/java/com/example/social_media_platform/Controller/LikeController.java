@@ -33,7 +33,7 @@ public class LikeController {
     @PostMapping("Like2/{commentId}")
     public ResponseEntity<LikeDto> likeComment(@PathVariable Long commentId, @RequestParam Long userId) {
         LikeDto message = likeServices.likeComment(commentId, userId);
-        return ResponseEntity.ok(message);
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
     @DeleteMapping("deleteLikeComm/{commentId}/like")

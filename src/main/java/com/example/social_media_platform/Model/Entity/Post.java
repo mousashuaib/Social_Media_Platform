@@ -5,6 +5,7 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -29,7 +30,7 @@ public class Post {
     private Timestamp date;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private Set<Media> media;
+    private Set<Media> media  = new HashSet<>();;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Comment> comments;

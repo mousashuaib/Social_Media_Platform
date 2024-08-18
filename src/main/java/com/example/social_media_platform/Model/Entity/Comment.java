@@ -6,6 +6,7 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -33,7 +34,7 @@ public class Comment {
     private Timestamp date;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private Set<Like> likes;
+    private Set<Like> likes = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

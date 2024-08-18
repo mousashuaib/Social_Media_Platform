@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -19,7 +20,7 @@ public class CommentDto {
     private Long post;
     private String text;
     private Timestamp date;
-    private Set<LikeDto> likes;
+    private Set<LikeDto> likes = new HashSet<>();;
 
 
 }

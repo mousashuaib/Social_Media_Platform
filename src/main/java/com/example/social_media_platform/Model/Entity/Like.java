@@ -1,13 +1,16 @@
 package com.example.social_media_platform.Model.Entity;
 
-
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "likes")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "likeId")
 public class Like {
 
     @Id
@@ -25,7 +28,4 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-
-
-
 }

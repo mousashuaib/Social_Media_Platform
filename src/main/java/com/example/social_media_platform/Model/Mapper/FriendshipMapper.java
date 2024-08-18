@@ -6,6 +6,8 @@ import com.example.social_media_platform.Model.Entity.Friendship;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface FriendshipMapper {
 
@@ -16,4 +18,6 @@ public interface FriendshipMapper {
     @Mapping(source = "userEntity1", target = "userEntity1.userId")
     @Mapping(source = "userEntity2", target = "userEntity2.userId")
     Friendship toEntity(FriendshipDto friendshipDto);
+
+    List<Friendship> toDtoList(List<Friendship> friendships);
 }

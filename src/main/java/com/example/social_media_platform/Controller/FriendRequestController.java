@@ -4,7 +4,6 @@ import com.example.social_media_platform.Model.Dto.FriendRequestDto;
 import com.example.social_media_platform.Model.Dto.FriendshipDto;
 import com.example.social_media_platform.Model.Entity.FriendRequest;
 import com.example.social_media_platform.Model.Entity.Friendship;
-import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.FriendRequestMapper;
 import com.example.social_media_platform.Model.Mapper.FriendshipMapper;
 import com.example.social_media_platform.Service.CustomUserDetailsService;
@@ -14,11 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -28,7 +23,6 @@ public class FriendRequestController {
     private final FriendshipMapper friendshipMapper;
     private final FriendRequestMapper friendRequestMapper;
     private final FriendRequestService friendRequestService;
-
     private final CustomUserDetailsService customUserDetailsService;
 
     public FriendRequestController(

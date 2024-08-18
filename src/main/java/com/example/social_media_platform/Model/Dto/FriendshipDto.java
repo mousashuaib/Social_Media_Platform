@@ -1,16 +1,11 @@
 package com.example.social_media_platform.Model.Dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class FriendshipDto {
     private Long friendshipId;
     private Long userEntity1;

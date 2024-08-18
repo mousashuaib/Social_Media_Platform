@@ -1,12 +1,14 @@
 package com.example.social_media_platform.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.sql.Timestamp;
 
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "friendship", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id1", "user_id2"})

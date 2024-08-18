@@ -1,11 +1,13 @@
 package com.example.social_media_platform.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "friend_request")
 public class FriendRequest {

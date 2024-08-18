@@ -1,21 +1,20 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "user_entity")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class UserEntity {
 
     @Id

@@ -23,4 +23,20 @@ public class Media {
     @Column(name = "media_url", length = 255)
     private String mediaUrl;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Media media = (Media) o;
+
+        return mediaId != null ? mediaId.equals(media.mediaId) : media.mediaId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mediaId != null ? mediaId.hashCode() : 0;
+    }
+
 }

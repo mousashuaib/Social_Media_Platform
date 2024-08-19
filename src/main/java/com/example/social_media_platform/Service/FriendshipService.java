@@ -16,6 +16,7 @@ public class FriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
 
+
     public FriendshipService(
             FriendshipRepository friendshipRepository,
             UserRepository userRepository) {
@@ -28,6 +29,9 @@ public class FriendshipService {
     public List<Friendship> getFriendships(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+
+
         return friendshipRepository.findByUserEntity1OrUserEntity2(user, user);
     }
 }

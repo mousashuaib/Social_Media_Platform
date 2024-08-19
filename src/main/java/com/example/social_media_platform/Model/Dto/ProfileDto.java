@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder // creates a builder for the class
 public class ProfileDto {
     private Long profileId;
     private Long userEntity;

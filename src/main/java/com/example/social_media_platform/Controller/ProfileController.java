@@ -16,7 +16,7 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @Description("Endpoint to create a profile for a user.")
+    @Description("Endpoint to get a profile for a user by userID.")
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ProfileDto> getProfile(@PathVariable Long userId) {
@@ -24,7 +24,7 @@ public class ProfileController {
         return ResponseEntity.ok(profileDto);
     }
 
-    @Description("Endpoint to create a profile for a user.")
+    @Description("Endpoint to search for a profile by username")
     @GetMapping("/search")
     public ResponseEntity<ProfileDto> searchProfile(@RequestParam String username) {
         ProfileDto profileDto = profileService.getProfileByName(username);
@@ -39,7 +39,7 @@ public class ProfileController {
         return ResponseEntity.ok(updatedProfile);
     }
 
-    @Description("Endpoint to create a profile for a user.")
+    @Description("Endpoint to update profile picture for a user.")
     @PutMapping("/updateProfilePicture/{userId}")
     @PreAuthorize("@profileSecurityService.isProfileOwner(#userId)")
     public ResponseEntity<ProfileDto> updateProfilePicture(@PathVariable Long userId, @RequestBody ProfileDto profileDto) {

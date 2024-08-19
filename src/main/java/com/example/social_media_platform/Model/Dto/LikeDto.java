@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder // creates a builder for the class
 public class LikeDto {
     private Long likeId;
     private Long userEntity;

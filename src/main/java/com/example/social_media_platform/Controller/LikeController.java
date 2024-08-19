@@ -18,25 +18,24 @@ public class LikeController {
 
 
 
-    @PostMapping("/posts/{postId}")
+    @PostMapping("/likePosts/{postId}")
     public ResponseEntity<LikeDto> likePost(@PathVariable Long postId, @RequestParam Long userId) {
         LikeDto likeDto = likeServices.likePost(postId, userId);
         return new ResponseEntity<>(likeDto, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/UnLikeposts/{postId}/like")
+    @DeleteMapping("/unlikePosts/{postId}/")
     public ResponseEntity<Void> unlikePost(@PathVariable Long postId, @RequestParam Long userId) {
         likeServices.unlikePost(postId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    @PostMapping("Like2/{commentId}")
+    @PostMapping("LikeComment/{commentId}")
     public ResponseEntity<LikeDto> likeComment(@PathVariable Long commentId, @RequestParam Long userId) {
         LikeDto message = likeServices.likeComment(commentId, userId);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("deleteLikeComm/{commentId}/like")
+    @DeleteMapping("unlikeComment/{commentId}/like")
     public ResponseEntity<String> unlikeComment(@PathVariable Long commentId, @RequestParam Long userId) {
         String message = likeServices.unlikeComment(commentId, userId);
         return ResponseEntity.ok(message);

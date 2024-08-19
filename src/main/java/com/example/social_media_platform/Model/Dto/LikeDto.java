@@ -1,17 +1,13 @@
 package com.example.social_media_platform.Model.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@Builder // creates a builder for the class
 public class LikeDto {
     private Long likeId;
     private Long userEntity;

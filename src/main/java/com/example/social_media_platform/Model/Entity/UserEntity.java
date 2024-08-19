@@ -1,27 +1,27 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Entity
 @Table(name = "user_entity")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, unique = true, length = 255)
     private String name;
 
     @Column(nullable = false, unique = true, length = 255)
@@ -53,17 +53,24 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Profile profile;
 
+
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private Set<FriendRequest> sentRequests;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendRequest> receivedRequests;
+
+
+    @OneToMany(mappedBy = "userEntity1", cascade = CascadeType.ALL)
+    private Set<Friendship> friendships;
 
     public UserEntity(String name, String email, String password) {
         this.email = email;

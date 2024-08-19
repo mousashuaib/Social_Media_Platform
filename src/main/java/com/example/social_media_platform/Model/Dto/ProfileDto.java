@@ -1,23 +1,20 @@
 package com.example.social_media_platform.Model.Dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@Builder // creates a builder for the class
 public class ProfileDto {
     private Long profileId;
     private Long userEntity;
     private String bio;
     private String profilePictureUrl;
+    private String coverPictureUrl;
     private Timestamp createdAt;
     private String misc;
     private Timestamp lastUpdated;

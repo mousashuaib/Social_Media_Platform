@@ -1,18 +1,21 @@
 package com.example.social_media_platform.Model.Entity;
 
-
-import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "comment")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "comment_id")
 public class Comment {
 
     @Id
@@ -40,5 +43,4 @@ public class Comment {
     protected void onCreate() {
         this.date = Timestamp.from(Instant.now());
     }
-
 }

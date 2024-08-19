@@ -1,18 +1,21 @@
 package com.example.social_media_platform.Model.Entity;
 
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "post")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "postId")
 public class Post {
 
     @Id
@@ -30,12 +33,15 @@ public class Post {
     private Timestamp date;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private Set<Media> media  = new HashSet<>();;
+
+    private Set<Media> media = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+
     private Set<Like> likes;
 
     @Column(name = "last_updated")
@@ -51,26 +57,9 @@ public class Post {
     protected void onUpdate() {
         this.lastUpdated = Timestamp.from(Instant.now());
     }
+
     public void addMedia(Media media) {
         media.setPost(this);
         this.media.add(media);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Post post = (Post) o;
-
-        return postId != null ? postId.equals(post.postId) : post.postId == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return postId != null ? postId.hashCode() : 0;
-    }
 }
-
-
-

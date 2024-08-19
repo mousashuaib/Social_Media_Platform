@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
@@ -32,16 +33,13 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp date;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Media> media = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-
     private Set<Like> likes;
 
     @Column(name = "last_updated")
@@ -56,10 +54,5 @@ public class Post {
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdated = Timestamp.from(Instant.now());
-    }
-
-    public void addMedia(Media media) {
-        media.setPost(this);
-        this.media.add(media);
     }
 }

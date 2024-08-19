@@ -11,28 +11,52 @@ import com.example.social_media_platform.Repo.LikeRepo;
 import com.example.social_media_platform.Repo.PostRepo;
 import com.example.social_media_platform.Repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class LikeServices {
+
     @Autowired
     private LikeRepo likeRepo;
+
     @Autowired
     private LikeMapper likeMapper;
+
     @Autowired
     private PostRepo postRepo;
+
     @Autowired
-    private UserRepository userRepo;
+    private UserRepository userRepository;
+
     @Autowired
     private CommentRepo commentRepo;
 
-    @Transactional
-    public LikeDto likePost(Long postId, Long userId) {
-        Post post = postRepo.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-        UserEntity userEntity = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    public LikeDto likePost(Long postId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        UserEntity userEntity = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Like> existingLike = likeRepo.findByPostAndUserEntity(post, userEntity);
+        if (existingLike.isPresent()) {
+            throw new AccessDeniedException("You have already liked this post.");
+        }
+
+
+        if (!Objects.equals(userEntity.getUserId(), currentUserId)) {
+            throw new AccessDeniedException("You dont have permission to like this post.");
+        }
+
+
 
         Like like = new Like();
         like.setPost(post);
@@ -42,55 +66,66 @@ public class LikeServices {
         return likeMapper.toDto(savedLike);
     }
 
-    @Transactional
-    public void unlikePost(Long postId, Long userId) {
+    public void unlikePost(Long postId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        UserEntity user = userRepo.findById(userId)
+
+        UserEntity user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Like like = likeRepo.findByPostAndUserEntity(post, user)
                 .orElseThrow(() -> new RuntimeException("Like not found"));
 
-        likeRepo.delete(like);
+        if (!Objects.equals(user.getUserId(), currentUserId)) {
+            throw new AccessDeniedException("You dont have permission to unlike this post.");
+        }
 
+        likeRepo.delete(like);
     }
 
-    @Transactional
-    public LikeDto likeComment(Long commentId, Long userId) {
+    public LikeDto likeComment(Long commentId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
         Comment comment = commentRepo.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
-        UserEntity user = userRepo.findById(userId)
+
+        UserEntity user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         Optional<Like> existingLike = likeRepo.findByCommentAndUserEntity(comment, user);
         if (existingLike.isPresent()) {
-            System.out.println("Comment already liked.");
+            throw new AccessDeniedException("You have already liked this comment.");
         }
+
+        if (!Objects.equals(user.getUserId(), currentUserId)) {
+            throw new AccessDeniedException("You dont have permission to unlike this post.");
+        }
+
         Like like = new Like();
         like.setComment(comment);
         like.setUserEntity(user);
 
         Like savedLike = likeRepo.save(like);
         return likeMapper.toDto(savedLike);
-
     }
 
-
-    @Transactional
-    public String unlikeComment(Long commentId, Long userId) {
+    public String unlikeComment(Long commentId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
         Comment comment = commentRepo.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
-        UserEntity user = userRepo.findById(userId)
+
+        UserEntity user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Like like = likeRepo.findByCommentAndUserEntity(comment, user)
                 .orElseThrow(() -> new RuntimeException("Like not found"));
 
+        if (!Objects.equals(user.getUserId(), currentUserId)) {
+            throw new AccessDeniedException("You dont have permission to unlike this post.");
+        }
+
         likeRepo.delete(like);
 
         return "Comment successfully unliked.";
     }
-
 }
-
-

@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 public class MediaDto {
     private Long mediaId;
     private Long post;

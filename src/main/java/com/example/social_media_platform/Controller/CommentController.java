@@ -18,8 +18,8 @@ public class CommentController {
     private CommentServices commentServices;
 
     @Description("Endpoint to add a new comment to a post.")
-    @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PostMapping("/add")
     public ResponseEntity<CommentDto> addComment(@RequestBody CommentDto commentDto) {
         CommentDto createdComment = commentServices.addComment(commentDto);
         return ResponseEntity.ok(createdComment);

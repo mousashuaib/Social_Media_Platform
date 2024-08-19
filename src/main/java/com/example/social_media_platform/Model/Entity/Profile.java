@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 
 @Getter
@@ -56,6 +57,15 @@ public class Profile {
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Timestamp.from(Instant.now());
+        this.lastUpdated = Timestamp.from(Instant.now());
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = Timestamp.from(Instant.now());
+    }
 }
 

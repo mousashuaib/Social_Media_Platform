@@ -1,13 +1,16 @@
 package com.example.social_media_platform.Model.Dto;
 
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Set;
 @Getter
+
 @Setter
-public class PostDto {
+public class
+PostDto {
     private Long postId;
     private Long userEntity;
     private String text;
@@ -16,6 +19,5 @@ public class PostDto {
     private Set<CommentDto> comments;
     private Set<LikeDto> likes;
     private Timestamp lastUpdated;
-
 
 }

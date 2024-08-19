@@ -18,13 +18,13 @@ public class MediaContoller {
 
 
 
-    @PostMapping("/Media")
+    @PostMapping("/AddMedia")
     public ResponseEntity<MediaDto> createMedia(@RequestBody MediaDto mediaDto) {
         MediaDto createdMedia = mediaServices.createMedia(mediaDto);
         return new ResponseEntity<>(createdMedia, HttpStatus.CREATED);
     }
 
-    @GetMapping("ById/{mediaId}")
+    @GetMapping("getById/{mediaId}")
     public ResponseEntity<MediaDto> getMediaById(@PathVariable Long mediaId) {
         MediaDto mediaDto = mediaServices.getMediaById(mediaId);
         return mediaDto != null ? new ResponseEntity<>(mediaDto, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,12 +35,12 @@ public class MediaContoller {
         List<MediaDto> mediaDtoList = mediaServices.getAllMedia();
         return new ResponseEntity<>(mediaDtoList, HttpStatus.OK);
     }
-    @DeleteMapping("deleteMe/{mediaId}")
+    @DeleteMapping("deleteMedia/{mediaId}")
     public ResponseEntity<Void> deleteMedia(@PathVariable Long mediaId) {
         boolean isDeleted = mediaServices.deleteMedia(mediaId);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    @PutMapping("updateMe/{mediaId}")
+    @PutMapping("updateMedia/{mediaId}")
     public ResponseEntity<MediaDto> updateMedia(@PathVariable Long mediaId, @RequestBody MediaDto mediaDto) {
         MediaDto updatedMedia = mediaServices.updateMedia(mediaId, mediaDto);
         return updatedMedia != null ? new ResponseEntity<>(updatedMedia, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);

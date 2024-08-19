@@ -52,8 +52,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
         UserEntity user = userService.registerUser(name, email, password);
         ProfileDto profileDto = profileService.createProfile(user.getUserId()); // Create a profile automatically when registering a user
-        return ResponseEntity.ok("User registered and profile created successfully. User Data:" + user +
-                "Profile Data:" + profileDto.toString());
+        return ResponseEntity.ok("User registered and profile created successfully. User Data:");
 
 
     }

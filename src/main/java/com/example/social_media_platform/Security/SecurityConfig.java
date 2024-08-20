@@ -42,7 +42,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("v0/auth/login", "v0/auth/register").permitAll() // Publicly accessible endpoints
+                        .requestMatchers("v0/auth/login", "v0/auth/register", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**").permitAll() // Publicly accessible endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Admin endpoints
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // User endpoints
                         .anyRequest().authenticated() // All other endpoints require authentication, including /test

@@ -46,7 +46,7 @@ public class FriendRequestController {
 
 
     @PutMapping("/accept/{requestId}")
-    @PreAuthorize("hasAuthority('ROLE_USER')") // Ensure only authenticated users can accept friend requests
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @Description("Accept a friend request")
     public ResponseEntity<FriendshipDto> acceptFriendRequest(@PathVariable Long requestId) throws AccessDeniedException {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
@@ -55,7 +55,7 @@ public class FriendRequestController {
     }
 
     @PutMapping("/reject/{requestId}")
-    @PreAuthorize("hasAuthority('ROLE_USER')") // Ensure only authenticated users can reject friend requests
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @Description("Reject a friend request")
     public ResponseEntity<Void> rejectFriendRequest(@PathVariable Long requestId) throws AccessDeniedException {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
@@ -64,7 +64,7 @@ public class FriendRequestController {
     }
 
     @GetMapping("/received")
-    @PreAuthorize("hasAuthority('ROLE_USER')") // Ensure only authenticated users can view their received friend requests
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @Description("Get all received friend requests")
     public ResponseEntity<List<FriendRequestDto>> getReceivedFriendRequests() throws AccessDeniedException {
         Long userId = customUserDetailsService.getCurrentUserId();
@@ -73,7 +73,7 @@ public class FriendRequestController {
     }
 
     @GetMapping("/sent")
-    @PreAuthorize("hasAuthority('ROLE_USER')") // Ensure only authenticated users can view their sent friend requests
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @Description("Get all sent friend requests")
     public ResponseEntity<List<FriendRequestDto>> getSentFriendRequests() throws AccessDeniedException{
         Long userId = customUserDetailsService.getCurrentUserId();

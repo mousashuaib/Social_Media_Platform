@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,12 +18,19 @@ public class MediaContoller {
     @Autowired
     private MediaServices mediaServices;
 
+    @PostMapping("/media")
+    public ResponseEntity<MediaDto> createMedia(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("mediaType") String mediaType,
+            @RequestParam("post") Long postId) throws IOException {
+        MediaDto mediaDto = MediaDto.builder()
+                .file(file)
+                .mediaType(mediaType)
+                .post(postId)
+                .build();
 
-
-    @PostMapping("/AddMedia")
-    public ResponseEntity<MediaDto> createMedia(@RequestBody MediaDto mediaDto) {
         MediaDto createdMedia = mediaServices.createMedia(mediaDto);
-        return new ResponseEntity<>(createdMedia, HttpStatus.CREATED);
+        return ResponseEntity.ok(createdMedia);
     }
 
     @GetMapping("getById/{mediaId}")

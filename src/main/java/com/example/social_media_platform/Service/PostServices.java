@@ -1,98 +1,80 @@
 package com.example.social_media_platform.Service;
 
+import com.example.social_media_platform.Config.FileUploadService;
 import com.example.social_media_platform.Model.Dto.MediaDto;
 import com.example.social_media_platform.Model.Dto.PostDto;
-import com.example.social_media_platform.Model.Entity.Media;
 import com.example.social_media_platform.Model.Entity.Post;
 import com.example.social_media_platform.Model.Mapper.MediaMapper;
 import com.example.social_media_platform.Model.Mapper.PostMapper;
-import com.example.social_media_platform.Repo.MediaRepo;
 import com.example.social_media_platform.Repo.PostRepo;
 import com.example.social_media_platform.Repo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 @Service
 public class PostServices {
-
 
     private final PostRepo postRepo;
     private final PostMapper postMapper;
     private final UserRepository userRepo;
     private final CustomUserDetailsService customUserDetailsService;
     private final MediaServices mediaServices;
-    private final MediaMapper mediaMapper;
+    private final FileUploadService fileUploadService;
 
+    @Autowired
     public PostServices(
             PostRepo postRepo,
             PostMapper postMapper,
             UserRepository userRepo,
             CustomUserDetailsService customUserDetailsService,
             MediaServices mediaServices,
-            MediaMapper mediaMapper
+            FileUploadService fileUploadService
     ) {
         this.postRepo = postRepo;
         this.postMapper = postMapper;
         this.userRepo = userRepo;
         this.customUserDetailsService = customUserDetailsService;
         this.mediaServices = mediaServices;
-        this.mediaMapper = mediaMapper;
+        this.fileUploadService = fileUploadService;
     }
 
-    public PostDto createPost(PostDto postDto) {
+    public PostDto createPost(String text, List<MultipartFile> media) throws IOException {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
-
-        // Check if the post's user ID matches the current user's ID
-        if (!Objects.equals(postDto.getUserEntity(), currentUserId)) {
-            throw new AccessDeniedException("You are not authorized to publish posts for other users.");
-        }
 
         Post post = new Post();
         post.setUserEntity(userRepo.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found")));
-        post.setText(postDto.getText());
+        post.setText(text);
 
-        // Save the Post first so it is persistent
         Post savedPost = postRepo.save(post);
+
+        // Handle file uploads and save media information
+        if (media != null && !media.isEmpty()) {
+            for (MultipartFile file : media) {
+                String fileName = fileUploadService.saveFile(file);
+                System.out.println("File saved: " + fileName); // Debugging line
+                MediaDto mediaDto = MediaDto.builder()
+                        .post(savedPost.getPostId())
+                        .mediaUrl("/uploads/" + fileName)
+                        .mediaType(file.getContentType())
+                        .file(file)
+                        .build();
+                mediaServices.createMedia(mediaDto);
+            }
+        }
+
 
         return postMapper.toDto(savedPost);
     }
 
-
-    public PostDto getPostById(Long postId) {
-        Post post = postRepo.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
-        return postMapper.toDto(post);
-    }
-
-
-    public List<PostDto> getAllPosts() {
-        return postRepo.findAll().stream()
-                .map(postMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-
-    public void deletePost(Long postId) {
-        Long currentUserId = customUserDetailsService.getCurrentUserId();
-        Post post = postRepo.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
-
-        // Ensure that only the post owner or an admin can delete the post
-        if (!Objects.equals(post.getUserEntity().getUserId(), currentUserId)) {
-            throw new AccessDeniedException("You are not authorized to delete this post.");
-        }
-
-        postRepo.delete(post);
-    }
-
-    public PostDto updatePost(Long postId, PostDto postDto) {
+    public PostDto updatePost(Long postId, String text, List<MultipartFile> mediaFiles) throws IOException {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
@@ -101,25 +83,50 @@ public class PostServices {
             throw new AccessDeniedException("You are not authorized to update this post.");
         }
 
-        // Update post text
-        post.setText(postDto.getText());
+        post.setText(text);
 
-        // Handle media update: Clear old media and add new/updated media
-        if (postDto.getMedia() != null) {
-            //delete the existing media
-            mediaServices.deleteMedia(postId);
+        if (mediaFiles != null && !mediaFiles.isEmpty()) {
+            // Remove existing media
+            post.getMedia().clear(); // Clear the media collection
+            postRepo.save(post); // Save changes to the post
 
-            // save or update the new media
-            postDto.getMedia().forEach(mediaDto -> {
-                mediaDto.setPost(postId); // Link media to the current post
+            // Save new media
+            for (MultipartFile file : mediaFiles) {
+                String fileName = fileUploadService.saveFile(file);
+                MediaDto mediaDto = MediaDto.builder()
+                        .post(post.getPostId())  // Set the Post ID
+                        .mediaUrl("/uploads/" + fileName)
+                        .mediaType(file.getContentType())
+                        .build();
                 mediaServices.createMedia(mediaDto);
-            });
+            }
         }
 
         Post updatedPost = postRepo.save(post);
         return postMapper.toDto(updatedPost);
     }
 
+    public PostDto getPostById(Long postId) {
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        return postMapper.toDto(post);
+    }
 
+    public List<PostDto> getAllPosts() {
+        return postRepo.findAll().stream()
+                .map(postMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
+    public void deletePost(Long postId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+
+        if (!Objects.equals(post.getUserEntity().getUserId(), currentUserId)) {
+            throw new AccessDeniedException("You are not authorized to delete this post.");
+        }
+
+        postRepo.delete(post);
+    }
 }

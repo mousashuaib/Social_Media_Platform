@@ -13,6 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("v0/auth")
 public class AuthController {
@@ -35,27 +38,34 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> login(@RequestParam String email, @RequestParam String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email); // Use CustomUserDetailsService
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok("token: " + jwt);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", jwt);
+
+        return ResponseEntity.ok(response);
     }
+
 
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> register(@RequestBody Map<String, String> userRequest) {
+        String name = userRequest.get("name");
+        String email = userRequest.get("email");
+        String password = userRequest.get("password");
+
         UserEntity user = userService.registerUser(name, email, password);
         ProfileDto profileDto = profileService.createProfile(user.getUserId()); // Create a profile automatically when registering a user
-        return ResponseEntity.ok("User registered and profile created successfully. User Data:");
-
-
+        return ResponseEntity.ok("User registered and profile created successfully.");
     }
+
 
 
 }

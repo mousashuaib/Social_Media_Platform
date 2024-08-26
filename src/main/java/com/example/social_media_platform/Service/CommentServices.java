@@ -2,9 +2,11 @@ package com.example.social_media_platform.Service;
 
 import com.example.social_media_platform.Model.Dto.CommentDto;
 import com.example.social_media_platform.Model.Entity.Comment;
+import com.example.social_media_platform.Model.Entity.Post;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.CommentMapper;
 import com.example.social_media_platform.Repo.CommentRepo;
+import com.example.social_media_platform.Repo.PostRepo;
 import com.example.social_media_platform.Repo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,33 +19,47 @@ import java.util.stream.Collectors;
 @Service
 public class CommentServices {
 
-    @Autowired
-    private CommentRepo commentRepo;
 
-    @Autowired
-    private CommentMapper commentMapper;
+    private final CommentRepo commentRepo;
+    private final CommentMapper commentMapper;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
+    private final PostRepo postRepository;
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private UserRepository userRepository;
+    public CommentServices(CommentRepo commentRepo, CommentMapper commentMapper, CustomUserDetailsService customUserDetailsService, UserRepository userRepository, PostRepo postRepository) {
+        this.commentRepo = commentRepo;
+        this.commentMapper = commentMapper;
+        this.customUserDetailsService = customUserDetailsService;
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+    }
 
     public CommentDto addComment(CommentDto commentDto) {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
 
-        // Ensure that the comment is being created by the authenticated user
-        if (!commentDto.getComment_id().equals(currentUserId)) {
-            throw new AccessDeniedException("You are not authorized to create comments for other users.");
+        // Ensure the comment text and post ID are present
+        if (commentDto.getText() == null || commentDto.getPost() == null) {
+            throw new IllegalArgumentException("Comment text and post ID are required");
         }
 
-        // Map the DTO to entity and set the associated user entity
+        // Find the post to which the comment is being added
+        Post post = postRepository.findById(commentDto.getPost())
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+
+
+
+        // Create and map the comment entity
         Comment comment = commentMapper.toEntity(commentDto);
-        UserEntity user = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        comment.setUser(user);
+        comment.setUser(userRepository.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found")));
+        comment.setPost(post); // Link the comment to the post
+
 
         Comment savedComment = commentRepo.save(comment);
+
+        post.getComments().add(savedComment);
+
+
         return commentMapper.toDto(savedComment);
     }
 

@@ -17,6 +17,4 @@ public class PostDto {
     private Set<CommentDto> comments;
     private Set<LikeDto> likes;
     private Timestamp lastUpdated;
-
-
 }

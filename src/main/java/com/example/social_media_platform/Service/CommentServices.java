@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,7 @@ public class CommentServices {
         comment.setUser(userRepository.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found")));
         comment.setPost(post); // Link the comment to the post
+        comment.setDate(new Timestamp(System.currentTimeMillis()));
 
 
         Comment savedComment = commentRepo.save(comment);

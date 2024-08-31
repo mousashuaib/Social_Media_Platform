@@ -27,7 +27,7 @@ public class ProfileService {
         this.profileSecurityService = profileSecurityService;
     }
 
-    public ProfileDto createProfile(Long userId) {
+    public ProfileDto createProfile(Long userId, String defaultImageUrl) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
@@ -38,10 +38,13 @@ public class ProfileService {
         profile.setUserEntity(userOptional.get());
         profile.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         profile.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+        profile.setProfilePictureUrl(defaultImageUrl);
 
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
     }
+
+
 
     public ProfileDto getProfileByUserId(Long userId) {
         Profile profile = profileRepository.findByUserEntity_UserId(userId)

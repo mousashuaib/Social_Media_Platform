@@ -1,18 +1,22 @@
 package com.example.social_media_platform.Controller;
 
+import com.example.social_media_platform.Config.FileUploadService;
 import com.example.social_media_platform.Model.Dto.ProfileDto;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Service.CustomUserDetailsService;
 import com.example.social_media_platform.Service.ProfileService;
 import com.example.social_media_platform.Service.UserService;
 import com.example.social_media_platform.Util.JwtUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,13 +30,17 @@ public class AuthController {
     private final UserService userService;
     private final ProfileService profileService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, CustomUserDetailsService userDetailsService, UserService userService, ProfileService profileService) {
+    private final FileUploadService fileUploadService;
+
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, CustomUserDetailsService userDetailsService, UserService userService, ProfileService profileService, FileUploadService fileUploadService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.profileService = profileService;
+        this.fileUploadService = fileUploadService;
     }
+
 
 
 
@@ -56,16 +64,25 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> userRequest) {
-        String name = userRequest.get("name");
-        String email = userRequest.get("email");
-        String password = userRequest.get("password");
-
+    public ResponseEntity<?> register(@RequestParam("name") String name,
+                                      @RequestParam("email") String email,
+                                      @RequestParam("password") String password,
+                                      @RequestParam("defaultImage") MultipartFile defaultImage){
         UserEntity user = userService.registerUser(name, email, password);
-        ProfileDto profileDto = profileService.createProfile(user.getUserId()); // Create a profile automatically when registering a user
+
+        // Create a default profile image URL
+        String defaultImageUrl;
+        try {
+            defaultImageUrl = fileUploadService.saveFile(defaultImage);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving default image");
+        }
+
+        // Create a profile automatically when registering a user with a default image
+        ProfileDto profileDto = profileService.createProfile(user.getUserId(), defaultImageUrl);
+
         return ResponseEntity.ok("User registered and profile created successfully.");
     }
-
 
 
 }

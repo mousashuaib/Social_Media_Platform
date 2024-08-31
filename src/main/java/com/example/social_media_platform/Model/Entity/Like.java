@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -19,6 +20,7 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private UserEntity userEntity;
 
     @ManyToOne

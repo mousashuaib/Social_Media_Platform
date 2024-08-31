@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 public class FileUploadService {
 
-    private final String UPLOAD_DIR = "uploads/";
+    private final String UPLOAD_DIR = "C:/Users/DELL/VS-Projects/Social_Media_Frontend/public/uploads";
 
     public String saveFile(MultipartFile file) throws IOException {
         // Ensure upload directory exists
@@ -32,6 +32,6 @@ public class FileUploadService {
         Files.copy(file.getInputStream(), filePath);
 
         // Return the URL or path to the saved file
-        return "/uploads/" + filename;
+        return filename;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.Set;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Role {
     private String name; // e.g., ROLE_USER, ROLE_ADMIN
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Set<UserEntity> users;
 
 

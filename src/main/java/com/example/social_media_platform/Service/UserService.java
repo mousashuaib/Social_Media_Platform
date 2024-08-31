@@ -30,6 +30,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
+    // Method to register a user
     public UserEntity registerUser(String name, String email, String password) {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("User with this email already exists");

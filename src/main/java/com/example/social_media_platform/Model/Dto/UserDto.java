@@ -16,7 +16,7 @@ public class UserDto {
     private Set<PostDto> posts;
     private Set<FriendRequestDto> sentRequests;
     private Set<FriendRequestDto> receivedRequests;
-    Set<CommentDto> comments;
+    private Set<CommentDto> comments;
     private Set<RoleDto> roles;
     private Set<FriendshipDto> friendships;
 }

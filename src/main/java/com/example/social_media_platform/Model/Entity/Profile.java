@@ -2,6 +2,7 @@ package com.example.social_media_platform.Model.Entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Profile {
     //FOREIGN KEY//
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference 
     private UserEntity userEntity;
 
     //FOREIGN KEY//

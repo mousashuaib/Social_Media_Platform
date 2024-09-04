@@ -2,6 +2,7 @@ package com.example.social_media_platform.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "comment")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "commentId")
 public class Comment {
 
     @Id
@@ -30,6 +31,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
+    @JsonManagedReference
     private Post post;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -38,6 +40,7 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp date;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private Set<Like> likes = new HashSet<>();
 

@@ -2,6 +2,7 @@ package com.example.social_media_platform.Controller;
 
 
 import com.example.social_media_platform.Model.Dto.LikeDto;
+import com.example.social_media_platform.Model.Entity.Like;
 import com.example.social_media_platform.Service.LikeServices;
 import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v0/like")
 public class LikeController {
 
     @Autowired
@@ -33,6 +36,15 @@ public class LikeController {
         likeServices.unlikePost(postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Description("Checks if the current user has liked a specific post.")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/isLiked/{postId}")
+    public ResponseEntity<Optional<Like>> isPostLiked(@PathVariable Long postId) {
+        return ResponseEntity.ok( likeServices.isPostLiked(postId));
+    }
+
+
 
     @Description("Allows the current user to like a specific comment.")
     @PreAuthorize("hasAuthority('ROLE_USER')")

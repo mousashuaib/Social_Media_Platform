@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 public class CommentDto {
     private Long comment_id;
-    private Long user;
+    private UserDto2 user;
     private Long post;
     private String text;
     private Timestamp date;

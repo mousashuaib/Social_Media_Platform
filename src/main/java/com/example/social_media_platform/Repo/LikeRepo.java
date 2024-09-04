@@ -14,4 +14,6 @@ public interface LikeRepo extends JpaRepository<Like, Long> {
     Optional<Like> findByPostAndUserEntity(Post post, UserEntity userEntity);
     Optional<Like> findByCommentAndUserEntity(Comment comment, UserEntity userEntity);
 
+
+
 }

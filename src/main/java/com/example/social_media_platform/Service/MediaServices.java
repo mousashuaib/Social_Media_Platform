@@ -22,7 +22,7 @@ public class MediaServices {
     private MediaMapper mediaMapper;
 
     @Autowired
-    private FileUploadService fileUploadService; // Inject your file upload service here
+    private FileUploadService fileUploadService;
 
     public MediaDto createMedia(MediaDto mediaDto) throws IOException {
         // Validate the file

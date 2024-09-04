@@ -36,34 +36,28 @@ public class CommentServices {
     }
 
     public CommentDto addComment(CommentDto commentDto) {
+        System.out.println("Inside addComment service with commentDto: " + commentDto);
         Long currentUserId = customUserDetailsService.getCurrentUserId();
 
-        // Ensure the comment text and post ID are present
         if (commentDto.getText() == null || commentDto.getPost() == null) {
             throw new IllegalArgumentException("Comment text and post ID are required");
         }
 
-        // Find the post to which the comment is being added
         Post post = postRepository.findById(commentDto.getPost())
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
-
-
-        // Create and map the comment entity
         Comment comment = commentMapper.toEntity(commentDto);
         comment.setUser(userRepository.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found")));
-        comment.setPost(post); // Link the comment to the post
+        comment.setPost(post);
         comment.setDate(new Timestamp(System.currentTimeMillis()));
 
-
         Comment savedComment = commentRepo.save(comment);
-
         post.getComments().add(savedComment);
-
 
         return commentMapper.toDto(savedComment);
     }
+
 
     public List<CommentDto> getAllComments() {
         return commentRepo.findAll().stream()

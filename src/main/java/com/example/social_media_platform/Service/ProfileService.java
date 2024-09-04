@@ -7,6 +7,7 @@ import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.ProfileMapper;
 import com.example.social_media_platform.Repo.ProfileRepository;
 import com.example.social_media_platform.Repo.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,9 +34,9 @@ public class ProfileService {
         this.fileUploadService = fileUploadService;
     }
 
+    @Transactional
     public ProfileDto createProfile(Long userId, String defaultImageUrl) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
-
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("User not found with ID: " + userId);
         }

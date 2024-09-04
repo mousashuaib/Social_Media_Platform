@@ -23,9 +23,6 @@ public class Media {
 
     private Post post;
 
-    @Column(name = "media_type", length = 50)
-    private String mediaType;
-
     @Column(name = "media_url", length = 255)
     private String mediaUrl;
 }

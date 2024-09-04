@@ -21,11 +21,9 @@ public class MediaContoller {
     @PostMapping("/media")
     public ResponseEntity<MediaDto> createMedia(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("mediaType") String mediaType,
             @RequestParam("post") Long postId) throws IOException {
         MediaDto mediaDto = MediaDto.builder()
                 .file(file)
-                .mediaType(mediaType)
                 .post(postId)
                 .build();
 

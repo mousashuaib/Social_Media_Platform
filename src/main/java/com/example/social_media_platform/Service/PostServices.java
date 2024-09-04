@@ -3,6 +3,7 @@ package com.example.social_media_platform.Service;
 import com.example.social_media_platform.Config.FileUploadService;
 import com.example.social_media_platform.Model.Dto.MediaDto;
 import com.example.social_media_platform.Model.Dto.PostDto;
+
 import com.example.social_media_platform.Model.Entity.Post;
 import com.example.social_media_platform.Model.Mapper.MediaMapper;
 import com.example.social_media_platform.Model.Mapper.PostMapper;
@@ -52,6 +53,7 @@ public class PostServices {
         post.setUserEntity(userRepo.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found")));
         post.setText(text);
+        post.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
 
         Post savedPost = postRepo.save(post);
 
@@ -63,7 +65,6 @@ public class PostServices {
                 MediaDto mediaDto = MediaDto.builder()
                         .post(savedPost.getPostId())
                         .mediaUrl("/uploads/" + fileName)
-                        .mediaType(file.getContentType())
                         .file(file)
                         .build();
                 mediaServices.createMedia(mediaDto);
@@ -96,7 +97,6 @@ public class PostServices {
                 MediaDto mediaDto = MediaDto.builder()
                         .post(post.getPostId())  // Set the Post ID
                         .mediaUrl("/uploads/" + fileName)
-                        .mediaType(file.getContentType())
                         .build();
                 mediaServices.createMedia(mediaDto);
             }

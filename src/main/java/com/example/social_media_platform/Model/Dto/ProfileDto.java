@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder // creates a builder for the class
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProfileDto {
     private Long profileId;
     private Long userEntity;

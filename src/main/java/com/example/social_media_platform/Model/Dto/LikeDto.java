@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder // creates a builder for the class
+@Builder
 public class LikeDto {
     private Long likeId;
-    private Long userEntity;
+    private UserDto2 userEntity;//here is the update from long to UserDto2
     private Long post;
     private Long comment;
 

@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -7,7 +8,6 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Getter
 @Setter
@@ -33,10 +33,10 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Profile profile;
 
-
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
@@ -48,15 +48,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendRequest> receivedRequests;
 
-
     @OneToMany(mappedBy = "userEntity1", cascade = CascadeType.ALL)
     private Set<Friendship> friendships;
-
-    public UserEntity(String name, String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -66,5 +59,9 @@ public class UserEntity {
     )
     private Set<Role> roles = new HashSet<>();
 
-
+    public UserEntity(String name, String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
 }

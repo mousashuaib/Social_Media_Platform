@@ -1,6 +1,8 @@
 package com.example.social_media_platform.Service;
 
+import com.example.social_media_platform.Model.Dto.PostDto;
 import com.example.social_media_platform.Model.Dto.UserDto;
+import com.example.social_media_platform.Model.Dto.UserDto2;
 import com.example.social_media_platform.Model.Entity.Role;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.UserMapper;
@@ -27,13 +29,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
     private final UserMapper userMapper;
+    private final UserMapper userMapper ;
 
-    @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder,
+                       CustomUserDetailsService customUserDetailsService,
+                       UserMapper userMapper){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.customUserDetailsService = customUserDetailsService;
         this.userMapper = userMapper;
     }
 
@@ -59,6 +67,12 @@ public class UserService {
         // Save the user
         return userRepository.save(user);
     }
+
+    // Find user by email
+    public Optional<UserEntity> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 
     public UserDto getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId)
@@ -109,6 +123,52 @@ public class UserService {
                     return dto;
                 })
                 .toList();
+    }
+
+
+    // Find user by ID
+    public Optional<UserEntity> findUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+
+    public List<UserDto> findUsersByIds(List<Long> ids) {
+        List<UserEntity> users = userRepository.findAllById(ids);
+        return users.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<UserDto2> getFriendSuggestions() {
+        // Fetch the current user's ID using the custom user details service
+        Long userId = customUserDetailsService.getCurrentUserId();
+
+        // Fetch the user entity of the signed-in user
+        UserEntity currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        // Get a list of IDs of the signed-in user's friends
+        Set<Long> friendIds = currentUser.getFriendships() != null
+                ? currentUser.getFriendships()
+                .stream()
+                .map(friendship -> friendship.getUserEntity2().getUserId())
+                .collect(Collectors.toSet())
+                : new HashSet<>(); // Use empty set if friendships are null
+
+        // Add the current user's ID to the set to exclude from suggestions
+        friendIds.add(userId);
+
+        // Fetch users that are not in the friends list
+        List<UserEntity> suggestedUsers = userRepository.findUsersNotInIds(friendIds);
+        if (suggestedUsers == null) {
+            throw new RuntimeException("Suggested users list is null.");
+        }
+
+        // Convert the users to DTOs
+        return suggestedUsers.stream()
+                .map(userMapper::toDto2)
+                .collect(Collectors.toList());
     }
 
 }

@@ -128,4 +128,17 @@ public class LikeServices {
 
         return "Comment successfully unliked.";
     }
+
+    public Optional<Like> isPostLiked(Long postId) {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        UserEntity user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<Like> existingLike = likeRepo.findByPostAndUserEntity(post, user);
+        return existingLike;
+    }
+
 }

@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class MediaDto {
     private Long mediaId;
     private Long post;
-    private String mediaType;
     private String mediaUrl;
     private MultipartFile file; // To handle file upload
 }

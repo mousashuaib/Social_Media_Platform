@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/v0/comments")
@@ -21,6 +22,8 @@ public class CommentController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<CommentDto> addComment(@RequestBody CommentDto commentDto) {
+        Logger logger = Logger.getLogger( "the comment is Comment being passed" + commentDto);
+        System.out.println("Received commentDto: " + commentDto);
         CommentDto createdComment = commentServices.addComment(commentDto);
         return ResponseEntity.ok(createdComment);
     }

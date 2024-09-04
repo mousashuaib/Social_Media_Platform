@@ -1,5 +1,6 @@
 package com.example.social_media_platform.Service;
 
+import com.example.social_media_platform.Config.FileUploadService;
 import com.example.social_media_platform.Model.Dto.ProfileDto;
 import com.example.social_media_platform.Model.Entity.Profile;
 import com.example.social_media_platform.Model.Entity.UserEntity;
@@ -8,6 +9,9 @@ import com.example.social_media_platform.Repo.ProfileRepository;
 import com.example.social_media_platform.Repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -18,13 +22,15 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final ProfileMapper profileMapper;
     private final ProfileSecurityService profileSecurityService;
+    private final FileUploadService fileUploadService;
 
     @Autowired
-    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, ProfileMapper profileMapper, ProfileSecurityService profileSecurityService) {
+    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, ProfileMapper profileMapper, ProfileSecurityService profileSecurityService, FileUploadService fileUploadService) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.profileMapper = profileMapper;
         this.profileSecurityService = profileSecurityService;
+        this.fileUploadService = fileUploadService;
     }
 
     public ProfileDto createProfile(Long userId, String defaultImageUrl) {
@@ -82,7 +88,7 @@ public class ProfileService {
         return profileMapper.toDto(profile);
     }
 
-    public ProfileDto updateProfilePicture(Long userId, ProfileDto profileDto) {
+    public ProfileDto updateProfilePicture(Long userId, MultipartFile profilePicture) throws IOException {
         if (!profileSecurityService.isProfileOwner(userId)) {
             throw new SecurityException("You are not authorized to update this profile picture.");
         }
@@ -90,13 +96,14 @@ public class ProfileService {
         Profile existingProfile = profileRepository.findByUserEntity_UserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
-        existingProfile.setProfilePictureUrl(profileDto.getProfilePictureUrl());
+        String profilePictureUrl = fileUploadService.saveFile(profilePicture);
+        existingProfile.setProfilePictureUrl(profilePictureUrl);
 
-        profileRepository.save(existingProfile);
-        return profileMapper.toDto(existingProfile);
+        Profile updatedProfile = profileRepository.save(existingProfile);
+        return profileMapper.toDto(updatedProfile);
     }
 
-    public ProfileDto updateCoverPicture(Long userId, ProfileDto profileDto) {
+    public ProfileDto updateCoverPicture(Long userId, MultipartFile coverPicture) throws IOException {
         if (!profileSecurityService.isProfileOwner(userId)) {
             throw new SecurityException("You are not authorized to update this cover picture.");
         }
@@ -104,9 +111,10 @@ public class ProfileService {
         Profile existingProfile = profileRepository.findByUserEntity_UserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
-        existingProfile.setCoverPictureUrl(profileDto.getCoverPictureUrl());
+        String coverPictureUrl = fileUploadService.saveFile(coverPicture);
+        existingProfile.setCoverPictureUrl(coverPictureUrl);
 
-        profileRepository.save(existingProfile);
-        return profileMapper.toDto(existingProfile);
+        Profile updatedProfile = profileRepository.save(existingProfile);
+        return profileMapper.toDto(updatedProfile);
     }
 }

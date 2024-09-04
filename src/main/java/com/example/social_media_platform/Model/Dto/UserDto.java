@@ -1,6 +1,7 @@
 package com.example.social_media_platform.Model.Dto;
 
 
+import com.example.social_media_platform.Model.Entity.UserEntity;
 import lombok.*;
 
 import java.util.Set;
@@ -19,4 +20,6 @@ public class UserDto {
     private Set<CommentDto> comments;
     private Set<RoleDto> roles;
     private Set<FriendshipDto> friendships;
+
+
 }

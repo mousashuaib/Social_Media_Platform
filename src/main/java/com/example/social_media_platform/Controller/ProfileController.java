@@ -25,6 +25,7 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ProfileDto> searchProfile(@RequestParam String username) {
         ProfileDto profileDto = profileService.getProfileByName(username);
         return ResponseEntity.ok(profileDto);

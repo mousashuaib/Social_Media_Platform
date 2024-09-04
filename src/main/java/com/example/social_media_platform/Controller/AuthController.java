@@ -43,10 +43,6 @@ public class AuthController {
         this.fileUploadService = fileUploadService;
     }
 
-
-
-
-
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestParam String email, @RequestParam String password) {
         Authentication authentication = authenticationManager.authenticate(
@@ -66,15 +62,12 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestParam("name") String name,
                                       @RequestParam("email") String email,
                                       @RequestParam("password") String password,
                                       @RequestParam("defaultImage") MultipartFile defaultImage){
         UserEntity user = userService.registerUser(name, email, password);
-
         // Create a default profile image URL
         String defaultImageUrl;
         try {
@@ -82,10 +75,8 @@ public class AuthController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving default image");
         }
-
         // Create a profile automatically when registering a user with a default image
         ProfileDto profileDto = profileService.createProfile(user.getUserId(), defaultImageUrl);
-
         return ResponseEntity.ok("User registered and profile created successfully.");
     }
 

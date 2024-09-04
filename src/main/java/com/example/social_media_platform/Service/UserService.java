@@ -6,23 +6,30 @@ import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.UserMapper;
 import com.example.social_media_platform.Repo.RoleRepository;
 import com.example.social_media_platform.Repo.UserRepository;
+import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-
+    @Autowired
     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -62,11 +69,46 @@ public class UserService {
 
     public Long getUserIdByEmail(String email) {
         Optional<UserEntity> user = userRepository.findByEmail(email);
-        if (user != null) {
+        if (user.isPresent()) {
             return user.get().getUserId();
         }
         throw new UsernameNotFoundException("User not found with email: " + email);
     }
 
+    // New methods to get user name and email
+    public String getUserNameById(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getName();
+    }
+
+    public String getUserEmailById(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getEmail();
+    }
+
+    // Method to update user details
+    public void updateUser(Long userId, String name) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setName(name);
+        userRepository.save(user);
+    }
+
+
+    public List<UserDto> searchUsersByName(String name) {
+        logger.info("Searching for users with name: {}", name);
+        List<UserEntity> users = userRepository.findByNameContainingIgnoreCase(name);
+        logger.info("Found users: {}", users);
+        return users.stream()
+                .map(user -> {
+                    UserDto dto = new UserDto();
+                    dto.setUserId(user.getUserId());
+                    dto.setName(user.getName());
+                    return dto;
+                })
+                .toList();
+    }
 
 }

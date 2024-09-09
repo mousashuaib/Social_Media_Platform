@@ -5,6 +5,7 @@ import com.example.social_media_platform.Model.Dto.MediaDto;
 import com.example.social_media_platform.Model.Dto.PostDto;
 
 import com.example.social_media_platform.Model.Entity.Post;
+import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.MediaMapper;
 import com.example.social_media_platform.Model.Mapper.PostMapper;
 import com.example.social_media_platform.Repo.PostRepo;
@@ -129,5 +130,17 @@ public class PostServices {
 
         postRepo.delete(post);
     }
+
+    public List<PostDto> getPostsByCurrentUser() {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        UserEntity currentUser = userRepo.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return postRepo.findByUserEntity(currentUser).stream()
+                .map(postMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

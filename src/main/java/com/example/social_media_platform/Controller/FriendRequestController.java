@@ -80,4 +80,15 @@ public class FriendRequestController {
         List<FriendRequest> sentRequests = friendRequestService.getSentFriendRequests(userId);
         return ResponseEntity.ok(friendRequestMapper.toDtoList(sentRequests));
     }
+
+    // In FriendRequestController.java
+    @DeleteMapping("/cancel/{requestId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @Description("Cancel a sent friend request if it is still pending")
+    public ResponseEntity<Void> cancelFriendRequest(@PathVariable Long requestId) throws AccessDeniedException, java.nio.file.AccessDeniedException {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        friendRequestService.cancelFriendRequest(requestId, currentUserId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

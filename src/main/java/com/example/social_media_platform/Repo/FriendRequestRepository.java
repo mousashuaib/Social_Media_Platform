@@ -2,6 +2,7 @@ package com.example.social_media_platform.Repo;
 
 
 import com.example.social_media_platform.Model.Entity.FriendRequest;
+import com.example.social_media_platform.Model.Entity.FriendRequestStatus;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,7 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     // Find a friend request between specific sender and receiver
     FriendRequest findBySenderAndReceiver(UserEntity sender, UserEntity receiver);
+
+    // Find all friend requests between specific sender and receiver
+    List<FriendRequest> findByReceiverAndStatus(UserEntity receiver, FriendRequestStatus status);
 }

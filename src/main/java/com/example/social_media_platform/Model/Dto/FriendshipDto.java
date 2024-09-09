@@ -8,9 +8,8 @@ import java.sql.Timestamp;
 @Setter
 public class FriendshipDto {
     private Long friendshipId;
-    private Long userEntity1;
-    private Long userEntity2;
+    private UserDto2 userEntity1;//here is the change
+    private UserDto2 userEntity2;//here is the change
     private Timestamp timestamp;
     private Timestamp lastUpdated;
-
 }

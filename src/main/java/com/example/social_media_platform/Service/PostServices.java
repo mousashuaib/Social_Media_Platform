@@ -5,6 +5,7 @@ import com.example.social_media_platform.Model.Dto.MediaDto;
 import com.example.social_media_platform.Model.Dto.PostDto;
 
 import com.example.social_media_platform.Model.Entity.Post;
+import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Model.Mapper.MediaMapper;
 import com.example.social_media_platform.Model.Mapper.PostMapper;
 import com.example.social_media_platform.Repo.PostRepo;
@@ -129,5 +130,20 @@ public class PostServices {
 
         postRepo.delete(post);
     }
+
+    public List<PostDto> getAllPostsByFriends() {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        UserEntity userEntity= userRepo.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Fetch posts from friends using the repository query
+        List<Post> friendPosts = postRepo.findPostsByFriends(userEntity);
+
+        // Map entities to DTOs and return
+        return friendPosts.stream()
+                .map(postMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 }

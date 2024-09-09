@@ -68,7 +68,10 @@ public class ProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
         existingProfile.setBio(profileDto.getBio());
-        existingProfile.setProfilePictureUrl(profileDto.getProfilePictureUrl());
+        // Only update profilePictureUrl if it is provided in the DTO
+        if (profileDto.getProfilePictureUrl() != null) {
+            existingProfile.setProfilePictureUrl(profileDto.getProfilePictureUrl());
+        }
         existingProfile.setMisc(profileDto.getMisc());
 
         Profile updatedProfile = profileRepository.save(existingProfile);

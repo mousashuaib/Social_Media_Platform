@@ -79,5 +79,13 @@ public class PostController {
         return ResponseEntity.ok(updatedPost);
     }
 
+
+    @GetMapping("/friendsPosts")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<PostDto>> getAllPostsByFriends() {
+        List<PostDto> friendPosts = postServices.getAllPostsByFriends();
+        return ResponseEntity.ok(friendPosts);
+    }
+
 }
 

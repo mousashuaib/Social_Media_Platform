@@ -131,6 +131,18 @@ public class PostServices {
         postRepo.delete(post);
     }
 
+    public List<PostDto> getPostsByCurrentUser() {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        UserEntity currentUser = userRepo.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return postRepo.findByUserEntity(currentUser).stream()
+                .map(postMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+
     public List<PostDto> getAllPostsByFriends() {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         UserEntity userEntity= userRepo.findById(currentUserId)

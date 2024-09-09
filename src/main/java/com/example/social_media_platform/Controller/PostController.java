@@ -87,5 +87,10 @@ public class PostController {
         return ResponseEntity.ok(friendPosts);
     }
 
+    @GetMapping("/postsById")
+    public List<PostDto> getUserPosts() {
+        return postServices.getPostsByCurrentUser();
+    }
+
 }
 

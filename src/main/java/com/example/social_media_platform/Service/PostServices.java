@@ -143,4 +143,19 @@ public class PostServices {
 
 
 
+    public List<PostDto> getAllPostsByFriends() {
+        Long currentUserId = customUserDetailsService.getCurrentUserId();
+        UserEntity userEntity= userRepo.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Fetch posts from friends using the repository query
+        List<Post> friendPosts = postRepo.findPostsByFriends(userEntity);
+
+        // Map entities to DTOs and return
+        return friendPosts.stream()
+                .map(postMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
 }

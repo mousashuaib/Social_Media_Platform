@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 @Setter
 public class FriendRequestDto {
     private Long requestId;
-    private Long sender;
-    private Long receiver;
+    private UserDto2 sender;//here is the update to show the image and username in the frontEnd
+    private UserDto2 receiver;
     private String status;
     private Timestamp createdAt;
 }

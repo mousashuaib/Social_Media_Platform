@@ -31,7 +31,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
     private final UserMapper userMapper;
-    private final UserMapper userMapper ;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
@@ -159,8 +158,20 @@ public class UserService {
         // Add the current user's ID to the set to exclude from suggestions
         friendIds.add(userId);
 
-        // Fetch users that are not in the friends list
-        List<UserEntity> suggestedUsers = userRepository.findUsersNotInIds(friendIds);
+        // Get a list of IDs of the users to whom the current user has sent friend requests
+        Set<Long> sentRequestIds = currentUser.getSentRequests() != null
+                ? currentUser.getSentRequests()
+                .stream()
+                .map(request -> request.getReceiver().getUserId())
+                .collect(Collectors.toSet())
+                : new HashSet<>(); // Use empty set if sent requests are null
+
+        // Combine friend IDs and sent request IDs to form a complete exclusion list
+        Set<Long> exclusionIds = new HashSet<>(friendIds);
+        exclusionIds.addAll(sentRequestIds);
+
+        // Fetch users that are not in the friends list or sent requests list
+        List<UserEntity> suggestedUsers = userRepository.findUsersNotInIds(exclusionIds);
         if (suggestedUsers == null) {
             throw new RuntimeException("Suggested users list is null.");
         }

@@ -25,8 +25,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findByNameContainingIgnoreCase(String name);
 
 
-    // Custom query to find users who are not in the provided IDs (friends list)
+    // Custom query to find users who are not in the provided IDs (friends list or sent requests list)
     @Query("SELECT u FROM UserEntity u WHERE u.userId NOT IN :ids")
     List<UserEntity> findUsersNotInIds(@Param("ids") Set<Long> ids);
+
 }
 

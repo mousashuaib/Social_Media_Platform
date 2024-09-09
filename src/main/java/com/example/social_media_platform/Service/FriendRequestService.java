@@ -1,6 +1,7 @@
 package com.example.social_media_platform.Service;
 
 import com.example.social_media_platform.Model.Entity.FriendRequest;
+import com.example.social_media_platform.Model.Entity.FriendRequestStatus;
 import com.example.social_media_platform.Model.Entity.Friendship;
 import com.example.social_media_platform.Model.Entity.UserEntity;
 import com.example.social_media_platform.Repo.FriendRequestRepository;
@@ -8,6 +9,7 @@ import com.example.social_media_platform.Repo.FriendshipRepository;
 import com.example.social_media_platform.Repo.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +79,7 @@ public class FriendRequestService {
         friendship.setUserEntity1(request.getSender());
         friendship.setUserEntity2(request.getReceiver());
         friendship.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        friendship.setLastUpdated(new Timestamp(System.currentTimeMillis()));
         return friendshipRepository.save(friendship);
     }
 
@@ -98,8 +101,11 @@ public class FriendRequestService {
     public List<FriendRequest> getReceivedFriendRequests(Long userId) {
         UserEntity receiver = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return friendRequestRepository.findByReceiver(receiver);
+
+        // Filter friend requests to only include those with a PENDING status
+        return friendRequestRepository.findByReceiverAndStatus(receiver, FriendRequestStatus.PENDING);
     }
+
 
     // Get all friend requests sent by a user
     public List<FriendRequest> getSentFriendRequests(Long userId) {
@@ -107,4 +113,19 @@ public class FriendRequestService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return friendRequestRepository.findBySender(sender);
     }
+
+    // In FriendRequestService.java
+    public void cancelFriendRequest(Long requestId, Long currentUserId) throws AccessDeniedException {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend request not found"));
+
+        // Check if the friend request is still pending and sent by the current user
+        if (!friendRequest.getSender().getUserId().equals(currentUserId) || friendRequest.getStatus() != FriendRequestStatus.PENDING) {
+            throw new AccessDeniedException("Cannot cancel this friend request.");
+        }
+
+        // Delete the friend request
+        friendRequestRepository.delete(friendRequest);
+    }
+
 }

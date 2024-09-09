@@ -3,6 +3,7 @@ package com.example.social_media_platform.Controller;
 import com.example.social_media_platform.Model.Dto.UserDto;
 import com.example.social_media_platform.Model.Dto.UserDto2;
 import com.example.social_media_platform.Model.Entity.UserEntity;
+import com.example.social_media_platform.Model.Mapper.UserMapper;
 import com.example.social_media_platform.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,12 @@ public class UserController {
 
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/{userId}/name")
@@ -40,16 +43,24 @@ public class UserController {
         return ResponseEntity.ok(email);
     }
 
-    // Endpoint to find user by email
     @GetMapping("/findByEmail")
     public ResponseEntity<?> findUserByEmail(@RequestParam String email) {
-        Optional<UserEntity> userEntity = userService.findUserByEmail(email);
-        if (userEntity.isPresent()) {
-            return ResponseEntity.ok(userEntity.get());
-        } else {
-            return ResponseEntity.status(404).body("User not found with email: " + email);
+        try {
+            Optional<UserEntity> userEntity = userService.findUserByEmail(email);
+            if (userEntity.isPresent()) {
+                // Convert UserEntity to UserDto2 using the mapper
+                UserDto2 userDto2 = userMapper.toDto2(userEntity.get());
+                return ResponseEntity.ok(userDto2);
+            } else {
+                return ResponseEntity.status(404).body("User not found with email: " + email);
+            }
+        } catch (Exception e) {
+            // Log the error for debugging
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred while fetching the user: " + e.getMessage());
         }
     }
+
 
     @PutMapping("/{userId}/update")
     public ResponseEntity<Void> updateUser(

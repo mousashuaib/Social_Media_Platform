@@ -9,6 +9,8 @@ import com.example.social_media_platform.Repo.ProfileRepository;
 import com.example.social_media_platform.Repo.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,17 +65,22 @@ public class ProfileService {
         if (!profileSecurityService.isProfileOwner(userId)) {
             throw new SecurityException("You are not authorized to update this profile.");
         }
-
         Profile existingProfile = profileRepository.findByUserEntity_UserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
 
         existingProfile.setBio(profileDto.getBio());
-        existingProfile.setProfilePictureUrl(profileDto.getProfilePictureUrl());
+
+        // Only update profilePictureUrl if it is provided in the DTO
+        if (profileDto.getProfilePictureUrl() != null) {
+            existingProfile.setProfilePictureUrl(profileDto.getProfilePictureUrl());
+        }
+
         existingProfile.setMisc(profileDto.getMisc());
 
         Profile updatedProfile = profileRepository.save(existingProfile);
         return profileMapper.toDto(updatedProfile);
     }
+
 
     public void deleteProfile(Long userId) {
         Profile profile = profileRepository.findByUserEntity_UserId(userId)
@@ -118,4 +125,5 @@ public class ProfileService {
         Profile updatedProfile = profileRepository.save(existingProfile);
         return profileMapper.toDto(updatedProfile);
     }
+
 }

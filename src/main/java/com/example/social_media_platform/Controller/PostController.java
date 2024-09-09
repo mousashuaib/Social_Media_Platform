@@ -61,8 +61,6 @@ public class PostController {
     }
 
 
-
-
     @DeleteMapping("/delete/{postId}")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
@@ -77,6 +75,11 @@ public class PostController {
                                               @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
         PostDto updatedPost = postServices.updatePost(postId, text, files);
         return ResponseEntity.ok(updatedPost);
+    }
+
+    @GetMapping("/postsById")
+    public List<PostDto> getUserPosts() {
+        return postServices.getPostsByCurrentUser();
     }
 
 }

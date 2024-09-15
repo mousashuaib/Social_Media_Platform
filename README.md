@@ -6,7 +6,7 @@ This project is a social media platform that will be built using Spring Boot. Th
 
 ## Features
 
-- **User Management**: Users can create accounts, manage their profiles, and authenticate securely.
+- **User Management**: Users can create accounts, manage their profiles, and authenticate securely
 - **Post Creation**: Users can create and publish posts, including text content.
 - **Commenting**: Users can comment on posts, enabling interactive discussions.
 - **Liking**: Users can like posts and comments to express appreciation or approval.
